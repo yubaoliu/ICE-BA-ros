@@ -1,0 +1,209 @@
+# Copyright (C) 2021, Yubao Liu, AISL, TOYOHASHI UNIVERSITY of TECHNOLOGY 
+# Email: yubao.liu.ra@tut.jp 
+
+FROM yubao/ubuntu18:cuda11.3.0
+# FROM ros:melodic-perception
+
+# FROM nvidia/cudagl:11.4.0-devel-ubuntu18.04
+# FROM yubaoliu/root:ros-cuda10.0-cudnn7-ubuntu18.04
+MAINTAINER yubao.liu.ra@tut.jp 
+
+# ENV LANG C.UTF-8
+# ENV LC_ALL C.UTF-8
+
+# # Use sources inside China
+# COPY sources.list /etc/apt/sources.list
+# #COPY hosts /etc/hosts
+ 
+# Setup timezone
+# RUN echo 'Etc/UTC' > /etc/timezone && \
+#     rm -f /etc/localtime && \
+#     ln -s /usr/share/zoneinfo/Etc/GMT+8 /etc/localtime && \
+#     apt-get update && apt-get install -y tzdata
+ 
+# RUN apt update \
+#     &&  apt install -f \
+#     && apt install -y  libglew-dev \
+#        libxkbcommon-dev \
+#        libgoogle-glog-dev \
+#        libsnappy-dev \
+#        libatlas-base-dev \
+#        build-essential \
+#        liblmdb-dev  \
+#        libleveldb-dev \
+#        automake \
+#        autotools-dev \
+#        bison \
+#        byacc \
+#        curl \
+#        git \
+#        zip \
+#        unzip \
+#        wget \
+#        python-dev \
+#        python-pip \
+#        python3-dev \
+#        python3-pip  \
+#        aptitude \
+#        libeigen3-dev \
+#        libboost-all-dev \
+#        protobuf-compiler \
+#        libprotobuf-dev \
+#        libhdf5-dev \
+#        libopencv-dev \
+#        python3-opencv \
+#        lsb-core  \
+#        openssh-server  \
+#        libssl-dev \
+#        libevent-dev \
+#        g++ \
+#        gdb \
+#        sudo \
+#        --fix-missing \
+#    && rm -rf /var/lib/apt/lists/*
+# 
+# # Install cmake
+# RUN apt-get purge -y cmake \
+#     && cd /tmp \
+#     && wget -c https://github.com/Kitware/CMake/releases/download/v3.18.1/cmake-3.18.1.tar.gz \
+#     && tar -xzvf cmake-3.18.1.tar.gz \
+#     && cd cmake-3.18.1 \
+#     && ./bootstrap && make && make install \
+#     && rm cmake-3.18.1 -rf 
+# 
+# ## update pip
+# RUN curl -kL https://bootstrap.pypa.io/pip/2.7/get-pip.py | python  \
+#     && curl -kL https://bootstrap.pypa.io/get-pip.py | python3 
+# 
+# # Add ROS repository
+# #RUN /bin/bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
+# #    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 
+# 
+# RUN    /bin/bash -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros-latest.list' \
+#     && /bin/bash -c 'echo "deb http://mirrors.ustc.edu.cn/ros/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros-latest.list' \
+#     && /bin/bash -c 'echo "deb http://mirrors.tuna.tsinghua.edu.cn/ros/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros-latest.list' \
+#     && /bin/bash -c 'echo "deb http://mirrors.sjtug.sjtu.edu.cn/ros/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros-latest.list' \
+#     && apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 
+# 
+# # Install ROS-Base packages
+# RUN apt-get update && apt install -f && apt-get install -y ros-melodic-desktop-full --fix-missing
+# 
+# # Install ROS bootstrap tools
+# RUN apt-get update && apt-get install --no-install-recommends -y \
+#     python-rosdep \
+#     python-rosinstall \
+#     python-vcstools \
+#     python-rosinstall-generator \
+#     python-wstool
+# 
+# WORKDIR /root
+# 
+# COPY External External
+# 
+# # Sophus
+# RUN cd /root/External/Sophus \
+#     && git checkout master \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. -DCMAKE_BUILD_TYPE=Release \
+#     && make -j3 \
+#     && make install 
+# 
+# # G2O
+# RUN cd /root/External/g2o \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. -DCMAKE_BUILD_TYPE=Release \
+#     && make -j 3 \
+#     && make install
+# 
+# #Pangolin
+# RUN cd /root/External/Pangolin \
+#     && git checkout v0.6 \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. -DCMAKE_BUILD_TYPE=Release \
+#     && make -j 3 \
+#     && make install
+# 
+# # Install mask rcnn dependencies
+# COPY requirements.txt /root/requirements.txt
+# RUN  pip2 install  -r /root/requirements.txt
+# RUN  pip3 install  -r /root/requirements.txt
+# # RUN  pip2 install  -r /root/requirements.txt --ignore-installed enum34 -i https://pypi.tuna.tsinghua.edu.cn/simple/
+# # RUN  pip2 install  -r /root/requirements.txt --ignore-installed enum34 -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+# # RUN  pip3 install  -r /root/requirements.txt -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
+# 
+# # caffe-segnet
+# RUN cd /root/External/semseg/SegNet/caffe-segnet/ \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. && make install
+# 
+#  # TUM Benchmark
+# # RUN cd /root \
+# #     && svn checkout https://svncvpr.in.tum.de/cvpr-ros-pkg/trunk/rgbd_benchmark/rgbd_benchmark_tools
+#    
+#  ## coco API
+# # RUN pip2 install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+# # RUN pip3 install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+# 
+# RUN pip2 install git+https://gitee.com/yubaoliu/cocoapi.git#subdirectory=PythonAPI
+# RUN pip3 install git+https://gitee.com/yubaoliu/cocoapi.git#subdirectory=PythonAPI
+# 
+# # Download Maskrcnn modle
+# # RUN mkdir /root/cnnmodel \
+# #     && cd /root/cnnmodel \
+# #     && wget -c https://github.com/matterport/Mask_RCNN/releases/download/v1.0/mask_rcnn_coco.h5 \
+# #     && wget -c http://mi.eng.cam.ac.uk/~agk34/resources/SegNet/segnet_pascal.caffemodel 
+#  
+# Tools
+# RUN apt update && \
+#     apt install -y vim tmux xterm lxterminal
+ 
+# # # Install dependencies
+# # # Newer CUDA was installed in base image, so rosdep keys of CUDA are skipped
+# # RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && \
+# #                   rosdep install --from-paths src -r -y --skip-keys=\"nvidia-cuda-dev nvidia-cuda\""
+# #                   
+# # # Build
+# # RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && \
+# #                   catkin_make -DCMAKE_BUILD_TYPE=Release"
+#  
+# # Set up rosdep
+# RUN rm  -rf /etc/ros/rosdep/sources.list.d/20-default.list \
+#     && rosdep init 
+# # RUN echo "185.199.108.133  raw.githubusercontent.com" > /etc/hosts && apt install -y inetutils-ping && ping  -c 10 raw.githubusercontent.com
+# RUN sed -i  's/https/https:\/\/ghproxy.com\/https/g' /etc/ros/rosdep/sources.list.d/20-default.list 
+# 
+# # RUN rosdep -q update
+# 
+# ### Create catkin workspace ###
+# RUN mkdir -p /root/catkin_ws/src
+# WORKDIR /root/catkin_ws
+# RUN bash -c "source /opt/ros/melodic/setup.bash && \
+#              catkin_make -DCMAKE_BUILD_TYPE=Release"
+# 
+# # Load ROS environment at docker exec bash
+# RUN echo "source /opt/ros/melodic/setup.bash" >> /root/.bashrc
+# RUN echo "source /root/catkin_ws/devel/setup.bash" >> /root/.bashrc
+# # ##############################################3
+ 
+# brisk
+RUN git clone https://github.com/yubaoliu/brisk.git \
+    && cd brisk \
+    && mkdir build \
+    && cd build \
+    && cmake -DCMAKE_BUILD_TYPE=Release .. \
+    && make -j8 \
+    && sudo apt install
+
+# Load ROS environment at each run
+COPY ./ros_entrypoint.sh / 
+RUN sudo chmod 755 /ros_entrypoint.sh
+ENTRYPOINT ["/ros_entrypoint.sh"]
+ 
+CMD ["bash"]
+ 
+# WORKDIR /root/catkin_ws/src
+# 

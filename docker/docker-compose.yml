@@ -1,0 +1,38 @@
+# Copyright (C) 2021, Yubao Liu, AISL, TOYOHASHI UNIVERSITY of TECHNOLOGY 
+# Email: yubao.liu.ra@tut.jp 
+version: '2.3'
+services:
+  ice-ba-ros:
+    image: yubao/ice-ba-ros:melodic
+    build:
+        context: .
+        # container_name: rds-slam
+        # args:
+        #     - HTTP_PROXY=$HTTP_PROXY
+        #     - http_proxy=$HTTP_PROXY
+        #     - HTTPS_PROXY=$HTTPS_PROXY
+        #     - https_proxy=$HTTPS_PROXY
+    command:  lxterminal
+    runtime: nvidia
+    privileged: true
+    stdin_open: true
+    tty: true
+    environment:
+        - DISPLAY
+        - QT_X11_NO_MITSHM=1
+    volumes:
+        - /tmp/.X11-unix:/tmp/.X11-unix:rw
+        - ..:/home/ubuntu/catkin_ws/src/ICE-BA
+        - ${DATASET_DIR}:/root/dataset
+        # - ${RESULT_DIR}:/root/results
+        # - ../SegNet_ROS:/root/catkin_ws/src/SegNet_ROS
+        # - ../MaskRCNN_ROS:/root/catkin_ws/src/MaskRCNN_ROS
+        # - ${CNN_MODEL_DIR}:/root/cnnmodel
+    entrypoint: /ros_entrypoint.sh
+    network_mode: host
+    dns:
+        - 8.8.8.8
+        - 4.4.4.4
+
+# volumes:
+#     ice-ba-ros_root:
